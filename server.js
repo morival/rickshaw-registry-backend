@@ -1,15 +1,17 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const mongoClient = require('mongodb').MongoClient;
 const bcrypt = require('bcrypt')
-const createRouter = require('./helpers/create-router.js')
+const createRouter = require('./helpers/create-router')
 
 app.use(express.json())
 
 
-const url = 'mongodb://localhost:27017'
+const url = process.env.DATABASE_URL
+
 mongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}
-    , (error, client) =>{
+    , (error, client) => {
     if (error) 
         console.log("Can't connect to the database")
 
@@ -17,18 +19,13 @@ mongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}
     const definitionsCollection = db.collection('users'); // essentially a collection is a table
 
     const definitionsRouter = createRouter(definitionsCollection);
-    app.use('/api/users/', definitionsRouter); 
-    
+    app.use('/api/users', definitionsRouter); 
     //here comes all our routes
 
     app.listen(3001, function () {
         console.log(`Listening on port ${ this.address().port }`);
     });
   })
-
-
-
-
 
 // const users = []
 

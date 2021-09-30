@@ -6,16 +6,23 @@ const createRouter = function(collection) {
 
   const router = express.Router();
 
-  router.get('/', (req, res) => {
-    collection
-    .find()
-    .toArray()
-    .then((docs) => res.json(docs))
-    .catch((err) => {
-      console.error(err);
-      res.status(500);
-      res.json({ status: 500, error: err });
-    });
+  router.get('/', async (req, res) => {
+    try {
+        const data = await collection.find().toArray()
+        res.json(data)
+        // console.log(await collection.find().count())
+    } catch(err) {
+        res.status(500).json({ message: err.message})
+    }
+    // collection
+    // .find()
+    // .toArray()
+    // .then((docs) => res.json(docs))
+    // .catch((err) => {
+    //   console.error(err);
+    //   res.status(500);
+    //   res.json({ status: 500, error: err });
+    // });
   });
 
   router.post('/', async (req, res) => {
@@ -28,55 +35,46 @@ const createRouter = function(collection) {
         collection
         .insertOne(user)
         res.status(201).send()
+        console.log("Added new user:", user.name)
+    } catch {
+        res.status(400).send()
+    }
+  });
+
+  
+  router.post('/login', async (req, res) => {
+    const data = await collection.find().toArray()
+    const user = data.find(user => user.name === req.body.name)
+    if (user == null)
+        res.status(400).send('Cannot find user')
+    try {
+        if (await bcrypt.compare(req.body.password, user.password)) 
+            res.send('Success')
+        else 
+            res.send('Not Allowed')
     } catch {
         res.status(500).send()
     }
-    // const newData = req.body;
+  });
+
+
+  router.put('/:id', async (req, res) => {
+    const data = await collection.find().toArray()
+    const id = req.params.id;
+    const updatedData = req.body;
+    delete updatedData._id;
+    data.findOneAndUpdate({ _id: ObjectID(id) }, { $set: updatedData })
     // collection
-    // .insertOne(newData)
-    // .then((result) => {
-    //   res.json(result.ops[0]);
+    // .findOneAndUpdate({ _id: ObjectID(id) }, { $set: updatedData })
+    // .then(result => {
+    //   res.json(result.value);
     // })
     // .catch((err) => {
-    //   console.error(err);
     //   res.status(500);
     //   res.json({ status: 500, error: err });
     // });
   });
 
-  router.post('/login', async (req, res) => {
-    const user = collection.find(user => user.name === req.body.name)
-    console.log(req.body.name)
-    if (user == null) {
-        return res.status(400).send('Cannot find user')
-    }
-    try {
-        if (await bcrypt.compare(req.body.password, user.password)) {
-            res.send('Success')
-        } else {
-            res.send('Not Allowed')
-        }
-    } catch {
-        res.status(500).send()
-    }
-  })
-
-
-  router.put('/:id', (req, res) => {
-    const id = req.params.id;
-    const updatedData = req.body;
-    delete updatedData._id;
-
-    collection
-    .findOneAndUpdate({ _id: ObjectID(id) }, { $set: updatedData })
-    .then(result => {
-      res.json(result.value);
-    })
-    .catch((err) => {
-      res.status(500);
-      res.json({ status: 500, error: err });
-    });
-  });
 
   router.delete('/:id', (req, res) => {
     const id = req.params.id;
