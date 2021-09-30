@@ -1,5 +1,5 @@
 const express = require('express');
-const ObjectID = require('mongodb').ObjectID;
+const ObjectID = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt')
 
 const createRouter = function(collection) {
@@ -43,6 +43,24 @@ const createRouter = function(collection) {
     //   res.json({ status: 500, error: err });
     // });
   });
+
+  router.post('/login', async (req, res) => {
+    const user = collection.find(user => user.name === req.body.name)
+    console.log(req.body.name)
+    if (user == null) {
+        return res.status(400).send('Cannot find user')
+    }
+    try {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            res.send('Success')
+        } else {
+            res.send('Not Allowed')
+        }
+    } catch {
+        res.status(500).send()
+    }
+  })
+
 
   router.put('/:id', (req, res) => {
     const id = req.params.id;
