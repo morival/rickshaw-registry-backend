@@ -98,19 +98,4 @@ const createRouter = function(collection) {
     return router;
 };
 
-
-// async function getUser(req, res, next) {
-//     let user
-//     try {
-//         user = await collection.findById(req.params.id)
-//         console.log(user)
-//         if (user == null)
-//         res.status(404).json({message: "Cannot find user"})
-//     } catch(err) {
-//         res.status(500).send()
-//     }
-//     res.user = user
-//     next()
-// }
-
 module.exports = createRouter;
