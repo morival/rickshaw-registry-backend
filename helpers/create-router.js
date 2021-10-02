@@ -95,7 +95,7 @@ const createRouter = function(collection) {
         }
     });
 
-    return router;
+    return router; 
 };
 
 module.exports = createRouter;
