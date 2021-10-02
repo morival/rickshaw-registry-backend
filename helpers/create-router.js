@@ -17,25 +17,15 @@ const createRouter = function(collection) {
   });
 
 //   GET ONE
-  router.get('/:id', async (req, res) => {
-    //   res.send(res.user.name)
-    const data = await collection.find().toArray()
+router.get("/:id", async (req, res) => {
     const id = req.params.id;
+    const user = await collection.findOne({ _id: ObjectID(id) })
     try {
-        if (await data.findOne({ _id: ObjectID(id)}))
-        res.send(data)
+        res.send(user)
     } catch(err) {
         res.status(500).json({ message: err.message})
     }
-    // collection
-    // .findOne({ _id: ObjectID(id) })
-    // .then((doc) => res.json(doc))
-    // .catch((err) => {
-    //   console.error(err);
-    //   res.status(500);
-    //   res.json({ status: 500, error: err });
-    // });
-  })
+})
 
 //   CREATE ONE
   router.post('/', async (req, res) => {
@@ -72,13 +62,13 @@ const createRouter = function(collection) {
 
 //   UPDATE ONE
   router.put('/:id', async (req, res) => {
+    const data = await collection.find().toArray()
+    const id = req.params.id;
+    const updatedData = req.body;
+    console.log(updatedData)
     try {
-        const data = await collection.find().toArray()
-        const id = req.params.id;
-        const updatedData = req.body;
-        console.log(updatedData)
-        delete updatedData._id;
-        data.findOneAndUpdate({ _id: ObjectID(id) }, { $set: updatedData })
+        if (await data.findOneAndUpdate({ _id: ObjectID(id)}, { $set: updatedData }, {returnOriginal: false}))
+        // data.findOneAndUpdate({ _id: ObjectID(id) }, { $set: updatedData })
         res.json(data.value)
     } catch {
         res.status(500).send()
