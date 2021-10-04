@@ -33,7 +33,10 @@ const createRouter = function(collection) {
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
             const user = {
                 name: req.body.name,
-                password: hashedPassword
+                email: req.body.email,
+                phoneNumber: req.body.phoneNumber,
+                password: hashedPassword,
+                registerDate: req.body.registerDate
             }
             collection.insertOne(user)
             res.json({ message: `Added new user: ${user.name}` })
