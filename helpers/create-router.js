@@ -30,6 +30,7 @@ const createRouter = function(collection) {
     //   CREATE ONE
     router.post('/', async (req, res) => {
         try {
+            // const data = await collection.find().toArray()
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
             const user = {
                 name: req.body.name,
@@ -38,8 +39,19 @@ const createRouter = function(collection) {
                 password: hashedPassword,
                 registerDate: req.body.registerDate
             }
-            collection.insertOne(user)
-            res.json({ message: `Added new user: ${user.name}` })
+            const testEmail = await collection.findOne({ email: user.email })
+            const testPhoneNumber = await collection.findOne({ phoneNumber: user.phoneNumber })
+            if (testEmail === null) {
+                if (testPhoneNumber === null) {
+                    collection.insertOne(user)
+                    res.json({ message: `Added new user: ${user.name}` })
+                } else {
+                    res.json({ message: `${testPhoneNumber.phoneNumber} phone number already exists` })
+                }
+            } else {
+                res.json({ message: `${testEmail.email} email already exists` })
+            }
+            
         } catch(err) {
             res.status(400).json({ message: err.message })
         }
