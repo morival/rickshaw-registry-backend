@@ -85,17 +85,18 @@ const createRouter = function(collection) {
     //   AUTHENTIFICATE
     router.post('/login', async (req, res) => {
         const data = await collection.find().toArray()
-        const user = data.find(user => user.email === req.body.email)
-        if (user === null)
-            res.status(404).json({ message: "Cannot find user" })
+        const user = data.find(user => user.email === req.body.login || user.phoneNumber === req.body.login)
+        // console.log(user)
         try {
-            if (await bcrypt.compare(req.body.password, user.password))
+            if (user === undefined)
+                res.status(404).json({ message: "Cannot find user" })
+            else if (await bcrypt.compare(req.body.password, user.password))
                 res.json(
-                    user
-                    // { message: "Success" }
+                    // user
+                    { message: "Success" }
                     )
             else 
-                res.json({ message: "Not Allowed" })
+                res.status(401).json({ message: "Not Allowed" })
         } catch(err) {
             res.status(500).json({ message: err.message })
         }
