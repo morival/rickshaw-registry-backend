@@ -44,7 +44,7 @@ const createRouter = function(collection) {
             if (testEmail === null) {
                 if (testPhoneNumber === null) {
                     collection.insertOne(user)
-                    res.json({ message: `Added new user: ${user.name}` })
+                    res.status(201).json(user)
                 } else {
                     res.json({ message: `${testPhoneNumber.phoneNumber} phone number already exists` })
                 }
@@ -104,8 +104,8 @@ const createRouter = function(collection) {
                 res.status(404).json({ message: "Cannot find user" })
             else if (await bcrypt.compare(req.body.password, user.password))
                 res.json(
-                    // user
-                    { message: "Success" }
+                    user
+                    // { message: "Success" }
                     )
             else 
                 res.status(401).json({ message: "Not Allowed" })
