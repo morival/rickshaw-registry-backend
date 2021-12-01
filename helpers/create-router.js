@@ -39,6 +39,7 @@ const createRouter = function(collection) {
                 password: hashedPassword,
                 registerDate: req.body.registerDate
             }
+            console.log(user)
             const testEmail = await collection.findOne({ email: user.email })
             const testPhoneNumber = await collection.findOne({ phoneNumber: user.phoneNumber })
             if (testEmail === null) {
@@ -46,10 +47,10 @@ const createRouter = function(collection) {
                     collection.insertOne(user)
                     res.status(201).json(user)
                 } else {
-                    res.json({ message: `${testPhoneNumber.phoneNumber} phone number already exists` })
+                    res.status(409).json({ code: "phoneNumber", message: "phone number already exists" })
                 }
             } else {
-                res.json({ message: `${testEmail.email} email already exists` })
+                res.status(409).json({ code: "email", message: "email already exists" })
             }
             
         } catch(err) {
@@ -65,6 +66,10 @@ const createRouter = function(collection) {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         const updatedData = {
             name: req.body.name,
+            email: req.body.email,
+            phoneNumber: req.body.phoneNumber,
+            address: req.body.address,
+            dOB: req.body.dOB,
             password: hashedPassword
         }
         try {
