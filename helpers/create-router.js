@@ -63,6 +63,7 @@ const createRouter = function(collection) {
     router.put('/:id', async (req, res) => {
         const id = req.params.id;
         const user = await collection.findOne({ _id: ObjectID(id) })
+        // console.log(user)
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         const updatedData = {
             name: req.body.name,
@@ -101,17 +102,15 @@ const createRouter = function(collection) {
     
     //   AUTHENTIFICATE
     router.post('/login', async (req, res) => {
+        const login = req.body.login
         const data = await collection.find().toArray()
-        const user = data.find(user => user.email === req.body.login || user.phoneNumber === req.body.login)
+        const user = data.find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
         // console.log(user)
         try {
             if (user === undefined)
                 res.status(404).json({ message: "Cannot find user" })
             else if (await bcrypt.compare(req.body.password, user.password))
-                res.json(
-                    user
-                    // { message: "Success" }
-                    )
+                res.json(user)
             else 
                 res.status(401).json({ message: "Not Allowed" })
         } catch(err) {
