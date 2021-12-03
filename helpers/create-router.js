@@ -112,7 +112,7 @@ const createRouter = function(collection) {
             else if (await bcrypt.compare(req.body.password, user.password))
                 res.json(user)
             else 
-                res.status(401).json({ message: "Not Allowed" })
+            res.status(401).json({ message: "Incorrect Password" })
         } catch(err) {
             res.status(500).json({ message: err.message })
         }
