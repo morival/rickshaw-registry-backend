@@ -29,8 +29,8 @@ const createRouter = function(collection) {
 
     //   CREATE ONE
     router.post('/', async (req, res) => {
+        // const data = await collection.find().toArray()
         try {
-            // const data = await collection.find().toArray()
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
             const user = {
                 name: req.body.name,
@@ -39,20 +39,17 @@ const createRouter = function(collection) {
                 password: hashedPassword,
                 registerDate: req.body.registerDate
             }
-            console.log(user)
+            // console.log(user)
             const testEmail = await collection.findOne({ email: user.email })
             const testPhoneNumber = await collection.findOne({ phoneNumber: user.phoneNumber })
-            if (testEmail === null) {
-                if (testPhoneNumber === null) {
+            if (!testEmail && !testPhoneNumber) {
                     collection.insertOne(user)
                     res.status(201).json(user)
-                } else {
-                    res.status(409).json({ code: "phoneNumber", message: "phone number already exists" })
-                }
-            } else {
-                res.status(409).json({ code: "email", message: "email already exists" })
+            } else if (testEmail) {
+                res.status(409).json({ code: "email", message: "The email already exists" })
+            } else if (testPhoneNumber) {
+                    res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
             }
-            
         } catch(err) {
             res.status(400).json({ message: err.message })
         }
@@ -63,23 +60,27 @@ const createRouter = function(collection) {
     router.put('/:id', async (req, res) => {
         const id = req.params.id;
         const user = await collection.findOne({ _id: ObjectID(id) })
-        // console.log(user)
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        const updatedData = {
-            name: req.body.name,
-            email: req.body.email,
-            phoneNumber: req.body.phoneNumber,
-            address: req.body.address,
-            dOB: req.body.dOB,
-            password: hashedPassword
-        }
+        // const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        delete req.body._id;
+        const data = req.body
+        console.log(data)
+        // const updateData = () => {
+        //     Object.entries(data).forEach(([key, value]) => {
+        //         console.log(`${key}: ${value}`)
+        //     })
+        // }
+        // console.log(updateData)
+        // const updatedData = {
+        //     name: req.body.name,
+        //     email: req.body.email,
+        //     phoneNumber: req.body.phoneNumber,
+        //     address: req.body.address,
+        //     dOB: req.body.dOB,
+        //     password: hashedPassword
+        // }
         try {
-            collection.findOneAndUpdate(
-                { _id: ObjectID(id) }, 
-                { $set: updatedData }, 
-                {returnOriginal: false});
+            collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
             const newUser = await collection.findOne({ _id: ObjectID(id) })
-            // res.send(newUser.name)
             res.json({ message: `${user.name} user has been updated to ${newUser.name}` })
         } catch {
             res.status(404).json({ message: "Cannot find user" })
@@ -102,17 +103,17 @@ const createRouter = function(collection) {
     
     //   AUTHENTIFICATE
     router.post('/login', async (req, res) => {
-        const login = req.body.login
-        const data = await collection.find().toArray()
-        const user = data.find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
-        // console.log(user)
         try {
+            const login = req.body.login
+            const data = await collection.find().toArray()
+            const user = data.find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
+            // console.log(user)
             if (user === undefined)
-                res.status(404).json({ message: "Cannot find user" })
+                res.status(404).json({ code: "userLogin", message: "Cannot find user" })
             else if (await bcrypt.compare(req.body.password, user.password))
                 res.json(user)
             else 
-            res.status(401).json({ message: "Incorrect Password" })
+            res.status(401).json({ code: "password", message: "Incorrect Password" })
         } catch(err) {
             res.status(500).json({ message: err.message })
         }
