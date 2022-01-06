@@ -48,42 +48,46 @@ const createRouter = function(collection) {
             } else if (testEmail) {
                 res.status(409).json({ code: "email", message: "The email already exists" })
             } else if (testPhoneNumber) {
-                    res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
+                res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
             }
         } catch(err) {
-            res.status(400).json({ message: err.message })
+            res.status(500).json({ message: err.message })
         }
     });
 
 
     //   UPDATE ONE
     router.put('/:id', async (req, res) => {
-        const id = req.params.id;
-        const user = await collection.findOne({ _id: ObjectID(id) })
-        // const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        delete req.body._id;
-        const data = req.body
-        console.log(data)
-        // const updateData = () => {
-        //     Object.entries(data).forEach(([key, value]) => {
-        //         console.log(`${key}: ${value}`)
-        //     })
-        // }
-        // console.log(updateData)
-        // const updatedData = {
-        //     name: req.body.name,
-        //     email: req.body.email,
-        //     phoneNumber: req.body.phoneNumber,
-        //     address: req.body.address,
-        //     dOB: req.body.dOB,
-        //     password: hashedPassword
-        // }
         try {
-            collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
-            const newUser = await collection.findOne({ _id: ObjectID(id) })
-            res.json({ message: `${user.name} user has been updated to ${newUser.name}` })
-        } catch {
-            res.status(404).json({ message: "Cannot find user" })
+            const id = req.params.id;
+            const user = await collection.findOne({ _id: ObjectID(id) })
+            // const hashedPassword = await bcrypt.hash(req.body.password, 10)
+            const testEmail = await collection.findOne({ email: req.body.email })
+            const testPhoneNumber = await collection.findOne({ phoneNumber: req.body.phoneNumber })
+            if (testEmail && id == testEmail._id)
+            console.log("email test passed")
+            if (testPhoneNumber && id == testPhoneNumber._id)
+            console.log("phone number passed")
+            delete req.body._id;
+            const data = req.body
+            // check if email or phone number already exists in DB exept for the current one
+            // if (!testEmail && !testPhoneNumber || testEmail && testEmail._id==id && testPhoneNumber && testPhoneNumber._id==id) {
+            //     console.log("email and phone number OK")
+
+            if (!testEmail || testEmail && testEmail._id==id) {
+                if (!testPhoneNumber || testPhoneNumber && testPhoneNumber._id==id) {
+                    await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
+                    const newUser = await collection.findOne({ _id: ObjectID(id) })
+                    res.json({ message: `${user.name} user has been updated to ${newUser.name}` })
+                } else {
+                    res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
+                }
+            } else {
+                res.status(409).json({ code: "email", message: "The email already exists" })
+            }
+        } catch (err) {
+            // res.status(404).json({ code: "userLogin", message: "Cannot find user" })
+            res.status(500).json({ message: err.message })
         }
     });
 
