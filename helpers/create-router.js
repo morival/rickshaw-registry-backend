@@ -64,12 +64,15 @@ const createRouter = function(collection) {
             // const hashedPassword = await bcrypt.hash(req.body.password, 10)
             const testEmail = await collection.findOne({ email: req.body.email })
             const testPhoneNumber = await collection.findOne({ phoneNumber: req.body.phoneNumber })
+            const hashedPassword = await bcrypt.hash(req.body.password, 10)
             if (testEmail && id == testEmail._id)
             console.log("email test passed")
             if (testPhoneNumber && id == testPhoneNumber._id)
             console.log("phone number passed")
             delete req.body._id;
             const data = req.body
+            data.password = hashedPassword
+            console.log(data)
             // check if email or phone number already exists in DB exept for the current one
             // if (!testEmail && !testPhoneNumber || testEmail && testEmail._id==id && testPhoneNumber && testPhoneNumber._id==id) {
             //     console.log("email and phone number OK")
