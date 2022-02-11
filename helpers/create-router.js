@@ -3,8 +3,28 @@ const ObjectID = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt')
 
 const createRouter = function(collection) {
-
+    
     const router = express.Router();
+    
+    //   AUTHENTIFICATE
+    router.post('/login', async (req, res) => {
+        try {
+            const login = req.body.login
+            const data = await collection.find().toArray()
+            const user = data.find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
+            console.log(user)
+            if (user === undefined)
+                res.status(404).json({ code: "userLogin", message: "Cannot find user" })
+            else if (await bcrypt.compare(req.body.password, user.password))
+                // res.json(user)
+                res.json({ id: user._id, message: "Authentification Success" })
+            else 
+            res.status(401).json({ code: "password", message: "Incorrect Password" })
+        } catch(err) {
+            res.status(500).json({ message: err.message })
+        }
+    });
+
 
     //   GET ALL
     router.get('/', async (req, res) => {
@@ -16,16 +36,19 @@ const createRouter = function(collection) {
         }
     });
 
+
     //   GET ONE
     router.get("/:id", async (req, res) => {
         const id = req.params.id;
         try {
             const user = await collection.findOne({ _id: ObjectID(id) })
-            res.send(user)
+            console.log(user)
+            res.json(user)
         } catch {
             res.status(404).json({ message: "Cannot find user"})
         }
     })
+
 
     //   CREATE ONE
     router.post('/', async (req, res) => {
@@ -61,27 +84,26 @@ const createRouter = function(collection) {
         try {
             const id = req.params.id;
             const user = await collection.findOne({ _id: ObjectID(id) })
-            // const hashedPassword = await bcrypt.hash(req.body.password, 10)
             const testEmail = await collection.findOne({ email: req.body.email })
             const testPhoneNumber = await collection.findOne({ phoneNumber: req.body.phoneNumber })
-            const hashedPassword = await bcrypt.hash(req.body.password, 10)
             if (testEmail && id == testEmail._id)
             console.log("email test passed")
             if (testPhoneNumber && id == testPhoneNumber._id)
             console.log("phone number passed")
             delete req.body._id;
             const data = req.body
-            data.password = hashedPassword
+            if (data.password) {
+                const hashedPassword = await bcrypt.hash(req.body.password, 10)
+                data.password = hashedPassword
+            }
             console.log(data)
-            // check if email or phone number already exists in DB exept for the current one
-            // if (!testEmail && !testPhoneNumber || testEmail && testEmail._id==id && testPhoneNumber && testPhoneNumber._id==id) {
-            //     console.log("email and phone number OK")
-
+            // Update only if new details are not duplicating existing email or phoneNumber of other user
             if (!testEmail || testEmail && testEmail._id==id) {
                 if (!testPhoneNumber || testPhoneNumber && testPhoneNumber._id==id) {
                     await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
                     const newUser = await collection.findOne({ _id: ObjectID(id) })
-                    res.json({ message: `${user.name} user has been updated to ${newUser.name}` })
+                    // res.json({ message: `${user.name} user has been updated to ${newUser.name}` })
+                    res.status(200).json(newUser)
                 } else {
                     res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
                 }
@@ -93,6 +115,7 @@ const createRouter = function(collection) {
             res.status(500).json({ message: err.message })
         }
     });
+
 
     //   DELETE ONE
     router.delete('/:id', async (req, res) => {
@@ -108,23 +131,6 @@ const createRouter = function(collection) {
         }
     });
     
-    //   AUTHENTIFICATE
-    router.post('/login', async (req, res) => {
-        try {
-            const login = req.body.login
-            const data = await collection.find().toArray()
-            const user = data.find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
-            // console.log(user)
-            if (user === undefined)
-                res.status(404).json({ code: "userLogin", message: "Cannot find user" })
-            else if (await bcrypt.compare(req.body.password, user.password))
-                res.json(user)
-            else 
-            res.status(401).json({ code: "password", message: "Incorrect Password" })
-        } catch(err) {
-            res.status(500).json({ message: err.message })
-        }
-    });
 
     return router; 
 };
