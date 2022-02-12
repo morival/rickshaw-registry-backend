@@ -9,7 +9,6 @@ app.use(express.json())
 app.use(cors())
 
 
-
 const url = process.env.DATABASE_URL
 
 mongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}
