@@ -2,7 +2,7 @@ const express = require('express');
 const ObjectID = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt')
 
-const createRouter = function(collection) {
+const createUserRouter = function(collection) {
     
     const router = express.Router();
     
@@ -140,8 +140,9 @@ const createRouter = function(collection) {
         if (user === null)
             res.status(404).json({ message: "Cannot find user" })
         try {
-            await collection.deleteOne({ _id: ObjectID(id) })
-            res.json({ message: `Deleted ${user.name}` })
+            const deleteAction = await collection.deleteOne({ _id: ObjectID(id) })
+            console.log(deleteAction)
+            res.status(200).json({ code: "account", message: `Deleted ${user.name}` })
         } catch(err) {
             res.status(500).json({ message: err.message })
         }
@@ -151,4 +152,4 @@ const createRouter = function(collection) {
     return router; 
 };
 
-module.exports = createRouter;
+module.exports = createUserRouter;
