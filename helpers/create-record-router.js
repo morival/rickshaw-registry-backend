@@ -61,7 +61,7 @@ const createRecordRouter = function(collection) {
     //   CREATE ONE
     router.post('/', async (req, res) => {
         const record = req.body
-        // console.log(record)
+        console.log(record)
         try {
             await collection.insertOne(record)
             res.status(201).json(record)
@@ -71,59 +71,41 @@ const createRecordRouter = function(collection) {
     });
 
 
-    // //   UPDATE ONE
+    //   UPDATE ONE
     // router.put('/:id', async (req, res) => {
     //     try {
     //         const data = req.body
     //         const id = req.params.id;
-    //         const user = await collection.findOne({ _id: ObjectID(id) })
-    //         const testEmail = await collection.findOne({ email: data.email })
-    //         const testPhoneNumber = await collection.findOne({ phoneNumber: data.phoneNumber })
-    //         if (testEmail && id == testEmail._id)
-    //         console.log("email test passed")
-    //         if (testPhoneNumber && id == testPhoneNumber._id)
-    //         console.log("phone number passed")
     //         delete data._id;
     //         if (data.password) {
     //             const hashedPassword = await bcrypt.hash(data.password, 10)
     //             data.password = hashedPassword
     //         }
     //         console.log(data)
-    //         // Update only if new details are not duplicating existing email or phoneNumber of other user
-    //         if (!testEmail || testEmail && testEmail._id==id) {
-    //             if (!testPhoneNumber || testPhoneNumber && testPhoneNumber._id==id) {
     //                 await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
-    //                 const newUser = await collection.findOne({ _id: ObjectID(id) })
-    //                 delete newUser.password
-    //                 // res.json({ message: `${user.name} user has been updated to ${newUser.name}` })
-    //                 res.status(200).json(newUser)
-    //             } else {
-    //                 res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
-    //             }
-    //         } else {
-    //             res.status(409).json({ code: "email", message: "The email already exists" })
-    //         }
+    //                 const user = await collection.findOne({ _id: ObjectID(id) })
+    //                 delete user.password
+    //                 res.status(200).json(user)
     //     } catch (err) {
-    //         // res.status(404).json({ code: "userLogin", message: "Cannot find user" })
     //         res.status(500).json({ message: err.message })
     //     }
     // });
 
 
-    // //   DELETE ONE
-    // router.delete('/:id', async (req, res) => {
-    //     const id = req.params.id;
-    //     const user = await collection.findOne({ _id: ObjectID(id) })
-    //     if (user === null)
-    //         res.status(404).json({ message: "Cannot find user" })
-    //     try {
-    //         const deleteAction = await collection.deleteOne({ _id: ObjectID(id) })
-    //         console.log(deleteAction)
-    //         res.status(200).json({ code: "account", message: `Deleted ${user.name}` })
-    //     } catch (err) {
-    //         res.status(500).json({ message: err.message })
-    //     }
-    // });
+    //   DELETE ONE
+    router.delete('/:id', async (req, res) => {
+        const id = req.params.id;
+        const record = await collection.findOne({ _id: ObjectID(id) })
+        if (record === null)
+            res.status(404).json({ message: "Cannot find record" })
+        try {
+            const deleteAction = await collection.deleteOne({ _id: ObjectID(id) })
+            console.log(deleteAction)
+            res.status(200).json({ code: "record", message: `Deleted ${record._id}` })
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    });
     
 
     return router; 

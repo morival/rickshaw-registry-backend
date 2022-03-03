@@ -14,16 +14,10 @@ const createUserRouter = function(collection) {
             const login = data.login
             // console.log(data)
             const user = (await collection.find().toArray()).find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
-            // const user = await collection.findOne({ 
-            //     $or: [
-            //          {email: login}, {phoneNumber: login}, { _id: ObjectID(login) }
-            //     ]
-            // })
-            console.log(user)
+             console.log(user)
             if (user === undefined)
                 res.status(404).json({ code: "userLogin", message: "Cannot find user" })
             else if (await bcrypt.compare(data.password, user.password))
-                // res.json(user)
                 res.json({ id: user._id, message: "Authentification Success" })
             else 
             res.status(401).json({ code: "password", message: "Incorrect Password" })
