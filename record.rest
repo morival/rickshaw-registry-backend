@@ -1,0 +1,34 @@
+GET http://localhost:3001/api/records
+
+### 
+
+GET http://localhost:3001/api/records/
+
+
+###
+
+POST http://localhost:3001/api/records
+Content-Type: application/json
+
+{
+    
+}
+
+###
+
+PUT http://localhost:3001/api/records/61e434eaa69b7e6481d5b27b
+Content-Type: application/json
+
+{
+    
+}
+
+###
+
+DELETE http://localhost:3001/api/records/6206a1723a86eada89794863
+
+###
+GET https://parseapi.back4app.com/
+X-Parse-Application-Id: 4oFovioSMOe1CJiiw8UeO3FdHEkHbka7FZx2awzn
+X-Parse-REST-API-Key: Rszcv5J1Q794frmM5Qrt4JHJizmP0WPdti70vvQN
+Content-Type: application/json

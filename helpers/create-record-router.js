@@ -27,7 +27,7 @@ const createRecordRouter = function(collection) {
     //             res.json({ id: user._id, message: "Authentification Success" })
     //         else 
     //         res.status(401).json({ code: "password", message: "Incorrect Password" })
-    //     } catch(err) {
+    //     } catch (err) {
     //         res.status(500).json({ message: err.message })
     //     }
     // });
@@ -38,7 +38,7 @@ const createRecordRouter = function(collection) {
         try {
             const data = await collection.find().toArray()
             res.json(data)
-        } catch(err) {
+        } catch (err) {
             res.status(500).json({ message: err.message})
         }
     });
@@ -60,34 +60,12 @@ const createRecordRouter = function(collection) {
 
     //   CREATE ONE
     router.post('/', async (req, res) => {
-        const data = req.body
+        const record = req.body
+        // console.log(record)
         try {
-            const record = {
-                // name: data.name,
-                // email: data.email,
-                // phoneNumber: data.phoneNumber,
-                // password: hashedPassword,
-                // dOB: "",
-                // line_1: "",
-                // line_2: "",
-                // line_3: "",
-                // post_town: "",
-                // postcode: "",
-                // registerDate: data.registerDate
-            }
-            // // console.log(user)
-            // const testEmail = await collection.findOne({ email: user.email })
-            // const testPhoneNumber = await collection.findOne({ phoneNumber: user.phoneNumber })
-            // if (!testEmail && !testPhoneNumber) {
-            //         await collection.insertOne(user)
-            //         delete user.password
-            //         res.status(201).json(user)
-            // } else if (testEmail) {
-            //     res.status(409).json({ code: "email", message: "The email already exists" })
-            // } else if (testPhoneNumber) {
-            //     res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
-            // }
-        } catch(err) {
+            await collection.insertOne(record)
+            res.status(201).json(record)
+        } catch (err) {
             res.status(500).json({ message: err.message })
         }
     });
@@ -142,7 +120,7 @@ const createRecordRouter = function(collection) {
     //         const deleteAction = await collection.deleteOne({ _id: ObjectID(id) })
     //         console.log(deleteAction)
     //         res.status(200).json({ code: "account", message: `Deleted ${user.name}` })
-    //     } catch(err) {
+    //     } catch (err) {
     //         res.status(500).json({ message: err.message })
     //     }
     // });

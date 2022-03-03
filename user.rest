@@ -1,0 +1,50 @@
+GET http://localhost:3001/api/users
+
+### 
+
+GET http://localhost:3001/api/users/616589ef4019cbec2e2c8fdb
+
+
+###
+
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "name": "Saskia",
+    "email": "sas@kia",
+    "phoneNumber": "09876543210",
+    "password": "!23Qwe"
+}
+
+###
+
+POST http://localhost:3001/api/users/login
+Content-Type: application/json
+
+{
+    "login": "616589ef4019cbec2e2c8fdb",
+    "password": "!23Qwe"
+}
+
+###
+
+PUT http://localhost:3001/api/users/61e434eaa69b7e6481d5b27b
+Content-Type: application/json
+
+{
+    "dOB": "1984-07-04"
+}
+
+###
+
+DELETE http://localhost:3001/api/users/6206ea6c54085e29c59429ad
+
+###
+GET https://parseapi.back4app.com/api/users/
+Headers: 
+{
+    "X-Parse-Application-Id": "4oFovioSMOe1CJiiw8UeO3FdHEkHbka7FZx2awzn",
+    "X-Parse-REST-API-Key": "Rszcv5J1Q794frmM5Qrt4JHJizmP0WPdti70vvQN",
+    "Content-Type": "application/json"
+}
