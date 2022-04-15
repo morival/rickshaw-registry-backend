@@ -10,9 +10,8 @@ const createUserRouter = function(collection) {
     //   AUTHENTIFICATE
     router.post('/login', async (req, res) => {
         try {
-            const data = req.body
-            const login = data.login
-            // console.log(data)
+            const data = req.body;
+            const login = data.login;
             const user = (await collection.find().toArray()).find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
              console.log(user)
             if (user === undefined)
@@ -30,7 +29,7 @@ const createUserRouter = function(collection) {
     //   GET ALL
     router.get('/', async (req, res) => {
         try {
-            const data = await collection.find().toArray()
+            const data = await collection.find().toArray();
             res.json(data)
         } catch (err) {
             res.status(500).json({ message: err.message})
@@ -38,8 +37,8 @@ const createUserRouter = function(collection) {
     });
 
 
-    //   GET ONE
-    router.get("/:id", async (req, res) => {
+    //   GET ONE BY ID
+    router.get('/:id', async (req, res) => {
         const id = req.params.id;
         try {
             const user = await collection.findOne({ _id: ObjectID(id) })
@@ -47,14 +46,68 @@ const createUserRouter = function(collection) {
             delete user.password
             res.status(200).json(user)
         } catch {
-            res.status(404).json({ message: "Cannot find user"})
+            res.status(404).json({ message: "Cannot find user" })
         }
     })
 
 
+    // TEST FOR DUPLICATE EMAIL
+    router.post('/email', async (req, res) => {
+        const data = req.body;
+        try {
+            const findUserByEmail = await collection.findOne({ email: data.email })
+            if (findUserByEmail && findUserByEmail._id.toString() === data._id)
+                res.status(202).json({ code: "email", message: "Duplicated email and ID" })
+            else if (findUserByEmail)
+                res.status(200).json({ code: "email", message: "The email already exists" })
+            else
+                res.status(202).json({ code: "email", message: "Email not found" })
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    })
+
+
+    // TEST FOR DUPLICATE PHONE NUMBER
+    router.post('/phoneNumber', async (req, res) => {
+        const data = req.body;
+        try {
+            const findUserByPhoneNo = await collection.findOne({ phoneNumber: data.phoneNumber })
+            if (findUserByPhoneNo && findUserByPhoneNo._id.toString() === data._id)
+                res.status(202).json({ code: "phoneNumber", message: "Duplicated phone number and ID" })
+            else if (findUserByPhoneNo)
+                res.status(200).json({ code: "phoneNumber", message: "The phone number already exists" })
+            else
+                res.status(202).json({ code: "phoneNumber", message: "Phone number not found" })
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    })
+
+
+    // //  CHECK IF USER WITH EMAIL OR PHONE NUMBER ALREADY EXISTS
+    // router.post('/includes', async (req, res) => {
+    //     const object = req.body;
+    //     try {
+    //         const findUserByEmail = await collection.findOne({ email: object.email })
+    //         const findUserByPhoneNo = await collection.findOne({ phoneNumber: object.phoneNumber })
+    //         const findUserbyID = await collection.findOne({ _id: ObjectID(object._id) })
+    //         if (findUserByEmail && findUserByEmail._id.toString() !== findUserbyID._id.toString()) 
+    //             res.status(409).json({ code: "email", message: "The email already exists" })
+    //         else if (findUserByPhoneNo && findUserByPhoneNo._id.toString() !== findUserbyID._id.toString()) 
+    //             res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
+    //         else
+    //             res.status(200).json({ message: "ok" })
+    //             // console.log("ok")
+    //     } catch (err) {
+    //         res.status(500).json({ message: err.message })
+    //     }
+    // })
+
+
     //   CREATE ONE
     router.post('/', async (req, res) => {
-        const data = req.body
+        const data = req.body;
         try {
             const hashedPassword = await bcrypt.hash(data.password, 10)
             const user = {

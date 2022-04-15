@@ -2,7 +2,7 @@ GET http://localhost:3001/api/users
 
 ### 
 
-GET http://localhost:3001/api/users/616589ef4019cbec2e2c8fdb
+GET http://localhost:3001/api/users/
 
 
 ###
@@ -23,7 +23,7 @@ POST http://localhost:3001/api/users/login
 Content-Type: application/json
 
 {
-    "login": "616589ef4019cbec2e2c8fdb",
+    "login": "mateusz.harlos@gmail.com",
     "password": "!23Qwe"
 }
 
@@ -38,13 +38,19 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3001/api/users/6206ea6c54085e29c59429ad
+DELETE http://localhost:3001/api/users/6256bbf0c737137226bbe42d
 
 ###
-GET https://parseapi.back4app.com/api/users/
-Headers: 
+GET https://parseapi.back4app.com/
+X-Parse-Application-Id: 4oFovioSMOe1CJiiw8UeO3FdHEkHbka7FZx2awzn
+X-Parse-REST-API-Key: Rszcv5J1Q794frmM5Qrt4JHJizmP0WPdti70vvQN
+Content-Type: application/json
+
+###
+POST http://localhost:3001/api/users/email
+Content-Type: application/json
+
 {
-    "X-Parse-Application-Id": "4oFovioSMOe1CJiiw8UeO3FdHEkHbka7FZx2awzn",
-    "X-Parse-REST-API-Key": "Rszcv5J1Q794frmM5Qrt4JHJizmP0WPdti70vvQN",
-    "Content-Type": "application/json"
+    "_id" : "6216221627390ea38837389c",
+    "email": "br@uni.nia"
 }

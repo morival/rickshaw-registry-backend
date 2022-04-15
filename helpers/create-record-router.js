@@ -72,24 +72,6 @@ const createRecordRouter = function(collection) {
 
 
     //   UPDATE ONE
-    // router.put('/:id', async (req, res) => {
-    //     try {
-    //         const data = req.body
-    //         const id = req.params.id;
-    //         delete data._id;
-    //         if (data.password) {
-    //             const hashedPassword = await bcrypt.hash(data.password, 10)
-    //             data.password = hashedPassword
-    //         }
-    //         console.log(data)
-    //                 await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
-    //                 const user = await collection.findOne({ _id: ObjectID(id) })
-    //                 delete user.password
-    //                 res.status(200).json(user)
-    //     } catch (err) {
-    //         res.status(500).json({ message: err.message })
-    //     }
-    // });
 
 
     //   DELETE ONE

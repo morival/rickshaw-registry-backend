@@ -25,7 +25,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3001/api/records/6206a1723a86eada89794863
+DELETE http://localhost:3001/api/records/62215dbdcbdb5301556ec12f
 
 ###
 GET https://parseapi.back4app.com/
