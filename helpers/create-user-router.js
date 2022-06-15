@@ -121,6 +121,12 @@ const createUserRouter = function(collection) {
                 line_3: "",
                 post_town: "",
                 postcode: "",
+                lic_type: "",
+                lic_no: "",
+                lic_name: "",
+                lic_isb: "",
+                lic_iso: "",
+                lic_exp: "",
                 registerDate: data.registerDate
             }
             // console.log(user)
