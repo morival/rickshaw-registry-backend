@@ -2,7 +2,7 @@ GET http://localhost:3001/api/records
 
 ### 
 
-GET http://localhost:3001/api/records/
+GET http://localhost:3001/api/records/user/6223673fcbdb5301556ec130
 
 
 ###

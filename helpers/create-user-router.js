@@ -127,6 +127,7 @@ const createUserRouter = function(collection) {
                 lic_isb: "",
                 lic_iso: "",
                 lic_exp: "",
+                acc_type: "",
                 registerDate: data.registerDate
             }
             // console.log(user)

@@ -44,6 +44,20 @@ const createRecordRouter = function(collection) {
     });
 
 
+    //   GET ALL OF USER
+    router.get('/user/:userID', async (req, res) => {
+        const userID = req.params.userID;
+        console.log(req.params)
+        try {
+            const data = await collection.find({ user_id: userID }).toArray()
+            console.log(data)
+            res.json(data)
+        } catch (err) {
+            res.status(500).json({ message: err.message})
+        }
+    })
+
+
     //   GET ONE
     router.get("/:id", async (req, res) => {
         const id = req.params.id;
