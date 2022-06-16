@@ -6,34 +6,8 @@ const createRecordRouter = function(collection) {
     
     const router = express.Router();
     
-    
-    // //   AUTHENTIFICATE
-    // router.post('/login', async (req, res) => {
-    //     try {
-    //         const data = req.body
-    //         const login = data.login
-    //         // console.log(data)
-    //         const user = (await collection.find().toArray()).find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
-    //         // const user = await collection.findOne({ 
-    //         //     $or: [
-    //         //          {email: login}, {phoneNumber: login}, { _id: ObjectID(login) }
-    //         //     ]
-    //         // })
-    //         console.log(user)
-    //         if (user === undefined)
-    //             res.status(404).json({ code: "userLogin", message: "Cannot find user" })
-    //         else if (await bcrypt.compare(data.password, user.password))
-    //             // res.json(user)
-    //             res.json({ id: user._id, message: "Authentification Success" })
-    //         else 
-    //         res.status(401).json({ code: "password", message: "Incorrect Password" })
-    //     } catch (err) {
-    //         res.status(500).json({ message: err.message })
-    //     }
-    // });
 
-
-    //   GET ALL
+    //  GET ALL
     router.get('/', async (req, res) => {
         try {
             const data = await collection.find().toArray()
@@ -44,7 +18,7 @@ const createRecordRouter = function(collection) {
     });
 
 
-    //   GET ALL OF USER
+    //  GET ALL OF USER
     router.get('/user/:userID', async (req, res) => {
         const userID = req.params.userID;
         console.log(req.params)
@@ -58,7 +32,7 @@ const createRecordRouter = function(collection) {
     })
 
 
-    //   GET ONE
+    //  GET ONE
     router.get("/:id", async (req, res) => {
         const id = req.params.id;
         try {
@@ -72,7 +46,7 @@ const createRecordRouter = function(collection) {
     })
 
 
-    //   CREATE ONE
+    //  CREATE ONE
     router.post('/', async (req, res) => {
         const record = req.body
         console.log(record)
@@ -85,10 +59,10 @@ const createRecordRouter = function(collection) {
     });
 
 
-    //   UPDATE ONE
+    //  UPDATE ONE
 
 
-    //   DELETE ONE
+    //  DELETE ONE
     router.delete('/:id', async (req, res) => {
         const id = req.params.id;
         const record = await collection.findOne({ _id: ObjectID(id) })
@@ -102,6 +76,20 @@ const createRecordRouter = function(collection) {
             res.status(500).json({ message: err.message })
         }
     });
+
+
+    //  DELETE ALL OF USER
+    router.delete('/user/:userID', async (req, res) => {
+        const userID = req.params.userID;
+        console.log(req.params)
+        try {
+            const deleteAction = await collection.deleteMany({ user_id: userID })
+            console.log(deleteAction)
+            res.status(200).json({ code: "record", message: `All records related to ${userID} user_id have been deleted` })
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    })
     
 
     return router; 
