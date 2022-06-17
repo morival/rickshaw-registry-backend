@@ -7,7 +7,7 @@ const createUserRouter = function(collection) {
     const router = express.Router();
     
     
-    //   AUTHENTIFICATE
+    //  AUTHENTIFICATE
     router.post('/login', async (req, res) => {
         try {
             const data = req.body;
@@ -26,7 +26,7 @@ const createUserRouter = function(collection) {
     });
 
 
-    //   GET ALL
+    //  GET ALL
     router.get('/', async (req, res) => {
         try {
             const data = await collection.find().toArray();
@@ -37,7 +37,7 @@ const createUserRouter = function(collection) {
     });
 
 
-    //   GET ONE BY ID
+    //  GET ONE BY ID
     router.get('/:id', async (req, res) => {
         const id = req.params.id;
         try {
@@ -51,7 +51,7 @@ const createUserRouter = function(collection) {
     })
 
 
-    // TEST FOR DUPLICATE EMAIL
+    //  TEST FOR DUPLICATE EMAIL
     router.post('/email', async (req, res) => {
         const data = req.body;
         try {
@@ -68,7 +68,7 @@ const createUserRouter = function(collection) {
     })
 
 
-    // TEST FOR DUPLICATE PHONE NUMBER
+    //  TEST FOR DUPLICATE PHONE NUMBER
     router.post('/phoneNumber', async (req, res) => {
         const data = req.body;
         try {
@@ -105,7 +105,7 @@ const createUserRouter = function(collection) {
     // })
 
 
-    //   CREATE ONE
+    //  CREATE ONE
     router.post('/', async (req, res) => {
         const data = req.body;
         try {
@@ -148,7 +148,7 @@ const createUserRouter = function(collection) {
     });
 
 
-    //   UPDATE ONE
+    //  UPDATE ONE
     router.put('/:id', async (req, res) => {
         try {
             const data = req.body
@@ -169,7 +169,7 @@ const createUserRouter = function(collection) {
     });
 
 
-    //   DELETE ONE
+    //  DELETE ONE
     router.delete('/:id', async (req, res) => {
         const id = req.params.id;
         const user = await collection.findOne({ _id: ObjectID(id) })

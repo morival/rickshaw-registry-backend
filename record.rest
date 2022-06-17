@@ -2,8 +2,7 @@ GET http://localhost:3001/api/records
 
 ### 
 
-GET http://localhost:3001/api/records/user/6223673fcbdb5301556ec130
-
+GET http://localhost:3001/api/records/user/6206ef1bf0578171fc669c29
 
 ###
 
@@ -26,6 +25,10 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3001/api/records/62215dbdcbdb5301556ec12f
+
+###
+
+DELETE http://localhost:3001/api/records/user/6206ef1bf0578171fc669c29
 
 ###
 GET https://parseapi.back4app.com/

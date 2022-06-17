@@ -1,0 +1,23 @@
+GET http://localhost:3001/api/checklist
+
+### 
+
+POST http://localhost:3001/api/checklist
+Content-Type: application/json
+
+{
+    "description": "At least one front light working"
+}
+
+###
+
+DELETE http://localhost:3001/api/checklist/62ab243ddb06a465f1e53a4c
+
+###
+
+DELETE http://localhost:3001/api/checklist
+Content-Type: application/json
+
+[
+    "62ab62f17c30ba9c27e50e04", "62abd0f8648ae119f2e03469"
+]
