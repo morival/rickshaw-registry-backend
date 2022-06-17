@@ -11,6 +11,15 @@ Content-Type: application/json
 
 ###
 
+PATCH http://localhost:3001/api/checklist/62ab243ddb06a465f1e53a4c
+Content-Type: application/json
+
+{
+
+}
+
+###
+
 DELETE http://localhost:3001/api/checklist/62ab243ddb06a465f1e53a4c
 
 ###

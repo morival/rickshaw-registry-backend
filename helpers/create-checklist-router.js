@@ -30,6 +30,20 @@ const createChecklistRouter = function(collection) {
     })
 
 
+    //  UPDATE ONE
+    router.patch('/:id', async (req, res) => {
+        const data = req.body;
+        const id = req.params.id;
+        try {
+            await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data })
+            const updatedDescription = await collection.findOne({ _id: ObjectID(id) })
+            res.status(200).json(updatedDescription)
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    })
+
+
     //  DELETE ONE
     router.delete('/:id', async (req, res) => {
         const id = req.params.id;
@@ -39,7 +53,7 @@ const createChecklistRouter = function(collection) {
         try {
             const deleteAction = await collection.deleteOne({ _id: ObjectID(id) })
             console.log(deleteAction)
-            res.status(200).json({ code: "description", message: `Deleted ${description._id}` })
+            res.status(200).json({ code: "description", message: `Deleted description: ${description.description}` })
         } catch (err) {
             res.status(500).json({ message: err.message })
         }

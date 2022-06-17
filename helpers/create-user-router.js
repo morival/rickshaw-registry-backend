@@ -150,14 +150,14 @@ const createUserRouter = function(collection) {
 
     //  UPDATE ONE
     router.put('/:id', async (req, res) => {
+        const data = req.body;
+        const id = req.params.id;
+        delete data._id;
         try {
-            const data = req.body
-            const id = req.params.id;
-            delete data._id;
-            if (data.password) {
+            // if (data.password) {
                 const hashedPassword = await bcrypt.hash(data.password, 10)
                 data.password = hashedPassword
-            }
+            // }
             console.log(data)
                     await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
                     const user = await collection.findOne({ _id: ObjectID(id) })
