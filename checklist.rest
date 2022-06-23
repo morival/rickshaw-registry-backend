@@ -6,21 +6,21 @@ POST http://localhost:3001/api/checklist
 Content-Type: application/json
 
 {
-    "description": "At least one front light working"
+    "description": "Wheels not wobbling"
 }
 
 ###
 
-PATCH http://localhost:3001/api/checklist/62ab243ddb06a465f1e53a4c
+PATCH http://localhost:3001/api/checklist/62acb25c2281510813b0df73
 Content-Type: application/json
 
 {
-
+    "description": "Identification plate fitted."
 }
 
 ###
 
-DELETE http://localhost:3001/api/checklist/62ab243ddb06a465f1e53a4c
+DELETE http://localhost:3001/api/checklist/62abe24e2af20a09663cdb37
 
 ###
 
@@ -28,5 +28,5 @@ DELETE http://localhost:3001/api/checklist
 Content-Type: application/json
 
 [
-    "62ab62f17c30ba9c27e50e04", "62abd0f8648ae119f2e03469"
+    "62ac6c862281510813b0df69", "62aca17c2281510813b0df70"
 ]

@@ -20,7 +20,11 @@ const createChecklistRouter = function(collection) {
 
     //  CREATE ONE
     router.post('/', async (req, res) => {
-        const data = req.body;
+        const data = {
+            description: req.body.description,
+            status: "",
+            comments: ""
+        }
         try {
             await collection.insertOne(data)
             res.status(201).json(data)
@@ -32,7 +36,8 @@ const createChecklistRouter = function(collection) {
 
     //  UPDATE ONE
     router.patch('/:id', async (req, res) => {
-        const data = req.body;
+        const data = {description: req.body.description};
+        console.log(data)
         const id = req.params.id;
         try {
             await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data })
