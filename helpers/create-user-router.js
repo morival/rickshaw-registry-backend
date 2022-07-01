@@ -85,24 +85,16 @@ const createUserRouter = function(collection) {
     })
 
 
-    // //  CHECK IF USER WITH EMAIL OR PHONE NUMBER ALREADY EXISTS
-    // router.post('/includes', async (req, res) => {
-    //     const object = req.body;
-    //     try {
-    //         const findUserByEmail = await collection.findOne({ email: object.email })
-    //         const findUserByPhoneNo = await collection.findOne({ phoneNumber: object.phoneNumber })
-    //         const findUserbyID = await collection.findOne({ _id: ObjectID(object._id) })
-    //         if (findUserByEmail && findUserByEmail._id.toString() !== findUserbyID._id.toString()) 
-    //             res.status(409).json({ code: "email", message: "The email already exists" })
-    //         else if (findUserByPhoneNo && findUserByPhoneNo._id.toString() !== findUserbyID._id.toString()) 
-    //             res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
-    //         else
-    //             res.status(200).json({ message: "ok" })
-    //             // console.log("ok")
-    //     } catch (err) {
-    //         res.status(500).json({ message: err.message })
-    //     }
-    // })
+    //  REQUEST PASSWORD RESET
+    router.post('/resetPassword', async (req, res) => {
+        const data = req.body;
+        console.log(data)
+        try {
+            
+        } catch (err) {
+            
+        }
+    })
 
 
     //  CREATE ONE

@@ -1,7 +1,48 @@
+// const nodemailer = require('nodemailer')
 require('dotenv').config()
+const Parse = require('parse/node');
+
+Parse.initialize(process.env.APP_ID, process.env.JS_KEY); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+Parse.serverURL = 'https://parseapi.back4app.com/'
+
+//Saving your First Data Object on Back4App
+async function saveNewPerson() {
+    const person = new Parse.Object("Person");
+  
+    person.set("name", "John Snow");
+    person.set("age", 27);
+    try {
+      let result = await person.save()
+      alert('New object created with objectId: ' + result.id);
+    } catch(error) {
+        alert('Failed to create new object, with error code: ' + error.message);
+    }
+} 
+
+//Reading your First Data Object from Back4App
+async function retrievePerson() {
+    const query = new Parse.Query("Person");
+
+    try {
+        const person = await query.get("eRYHrDBwND");
+        const name = person.get("name");
+        const age = person.get("age");
+
+        alert(`Name: ${name} age: ${age}`);
+    } catch (error) {
+        alert(`Failed to retrieve the object, with error code: ${error.message}`);
+    }
+}  
+
+// const smtpTransport = nodemailer.createTransport({
+//     host: 'gmail'
+// })
+
+
 const express = require('express')
 var cors = require('cors')
 const app = express()
+
 const mongoClient = require('mongodb').MongoClient;
 const createUserRouter = require('./helpers/create-user-router')
 const createRecordRouter = require('./helpers/create-record-router')
@@ -37,7 +78,9 @@ mongoClient.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}
     const adminRouter = createAdminRouter(adminCollection);
     app.use('/api/admin', adminRouter)
 
-    app.listen(3001, function () {
+
+    const port = process.env.PORT || 3001;
+    app.listen(port, function () {
         console.log(`Listening on port ${ this.address().port }`);
     });
   })

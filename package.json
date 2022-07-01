@@ -13,7 +13,9 @@
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongodb": "^4.1.2"
+    "mongodb": "^4.1.2",
+    "nodemailer": "^6.7.6",
+    "parse": "^3.4.2"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
