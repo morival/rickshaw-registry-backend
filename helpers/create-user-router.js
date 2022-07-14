@@ -90,9 +90,13 @@ const createUserRouter = function(collection) {
         const data = req.body;
         console.log(data)
         try {
-            
+            const findUserByEmail = await collection.findOne({ email: data.email })
+            if (findUserByEmail)
+                res.status(200).json({ code: "email", message: "Email found" })
+            else
+                res.status(202).json({ code: "email", message: "Email not found" })
         } catch (err) {
-            
+            res.status(500).json({ message: err.message })
         }
     })
 
