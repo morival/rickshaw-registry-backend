@@ -144,23 +144,39 @@ const createUserRouter = function(collection) {
     });
 
 
-    //  UPDATE ONE
+    //  UPDATE ONE AS USER
     router.put('/:id', async (req, res) => {
         const data = req.body;
         const id = req.params.id;
         delete data._id;
+        delete data.registerDate;
         try {
-            // if (data.password) {
-                const hashedPassword = await bcrypt.hash(data.password, 10)
-                data.password = hashedPassword
-            // }
+            const hashedPassword = await bcrypt.hash(data.password, 10);
+            data.password = hashedPassword;
             console.log(data)
-                    await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
-                    const user = await collection.findOne({ _id: ObjectID(id) })
-                    delete user.password
-                    res.status(200).json(user)
+            await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
+            const user = await collection.findOne({ _id: ObjectID(id) });
+            delete user.password
+            res.status(200).json(user)
         } catch (err) {
             res.status(500).json({ message: err.message })
+        }
+    });
+
+    // UPDATE ONE AS ADMIN
+    router.put('/updateAsAdmin/:id', async (req, res) => {
+        const data = req.body;
+        const id = req.params.id;
+        delete data._id;
+        delete data.registerDate;
+        delete data.password;
+        try {
+            await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
+            const user = await collection.findOne({ _id: ObjectID(id) });
+            console.log(user)
+            res.status(200).json(user)
+        } catch (err) {
+            res.status(500).json({  message: err.message })
         }
     });
 
