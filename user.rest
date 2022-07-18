@@ -29,11 +29,19 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:3001/api/users/61e434eaa69b7e6481d5b27b
+PUT http://localhost:3001/api/users/6216221627390ea38837389c
 Content-Type: application/json
 
 {
-    "dOB": "1984-07-04"
+    "password": "!23Qwe"
+}
+
+###
+PUT http://localhost:3001/api/users/updateAsAdmin/6216221627390ea38837389c
+Content-Type: application/json
+
+{
+    "line_3": "blablabla"
 }
 
 ###
@@ -47,10 +55,10 @@ X-Parse-REST-API-Key: Rszcv5J1Q794frmM5Qrt4JHJizmP0WPdti70vvQN
 Content-Type: application/json
 
 ###
-POST http://localhost:3001/api/users/email
+POST http://localhost:3001/api/users/testForDuplicate
 Content-Type: application/json
 
 {
     "_id" : "6216221627390ea38837389c",
-    "email": "br@uni.nia"
+    "email": "tedros@gmail.com"
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const ObjectID = require('mongodb').ObjectId;
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { json } = require('express');
 
 const createUserRouter = function(collection) {
     
@@ -13,13 +14,13 @@ const createUserRouter = function(collection) {
             const data = req.body;
             const login = data.login;
             const user = (await collection.find().toArray()).find(user => user.email === login || user.phoneNumber === login || user._id.toString() == login)
-             console.log(user)
+            console.log(user)
             if (user === undefined)
-                res.status(404).json({ code: "userLogin", message: "Cannot find user" })
+                res.status(404).json({ userLogin: "Cannot find user" })
             else if (await bcrypt.compare(data.password, user.password))
                 res.json({ id: user._id, message: "Authentification Success" })
             else 
-            res.status(401).json({ code: "password", message: "Incorrect Password" })
+            res.status(401).json({ password: "Incorrect Password" })
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
@@ -51,34 +52,21 @@ const createUserRouter = function(collection) {
     })
 
 
-    //  TEST FOR DUPLICATE EMAIL
-    router.post('/email', async (req, res) => {
+    // TEST FOR DUPLICATE EMAIL OR PHONE NUMBER IN OTHER USERS
+    router.post('/testForDuplicate', async (req, res ) => {
         const data = req.body;
+        const testResponse = {email: "", phoneNumber: ""};
         try {
             const findUserByEmail = await collection.findOne({ email: data.email })
-            if (findUserByEmail && findUserByEmail._id.toString() === data._id)
-                res.status(202).json({ code: "email", message: "Duplicated email and ID" })
-            else if (findUserByEmail)
-                res.status(200).json({ code: "email", message: "The email already exists" })
-            else
-                res.status(202).json({ code: "email", message: "Email not found" })
-        } catch (err) {
-            res.status(500).json({ message: err.message })
-        }
-    })
-
-
-    //  TEST FOR DUPLICATE PHONE NUMBER
-    router.post('/phoneNumber', async (req, res) => {
-        const data = req.body;
-        try {
             const findUserByPhoneNo = await collection.findOne({ phoneNumber: data.phoneNumber })
-            if (findUserByPhoneNo && findUserByPhoneNo._id.toString() === data._id)
-                res.status(202).json({ code: "phoneNumber", message: "Duplicated phone number and ID" })
-            else if (findUserByPhoneNo)
-                res.status(200).json({ code: "phoneNumber", message: "The phone number already exists" })
+            if (findUserByEmail && findUserByEmail._id.toString() !== data._id)
+                testResponse.email = "The email already exists";
+            if (findUserByPhoneNo && findUserByPhoneNo._id.toString() !== data._id)
+                testResponse.phoneNumber = "The phone number already exists";
+            if (testResponse.email !== "" || testResponse.phoneNumber !== "")
+                res.status(203).json(testResponse) 
             else
-                res.status(202).json({ code: "phoneNumber", message: "Phone number not found" })
+                res.status(200).json(testResponse)
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
@@ -123,45 +111,17 @@ const createUserRouter = function(collection) {
                 lic_isb: "",
                 lic_iso: "",
                 lic_exp: "",
-                acc_type: "",
+                acc_type: "user",
                 registerDate: data.registerDate
             }
-            // console.log(user)
-            const testEmail = await collection.findOne({ email: user.email })
-            const testPhoneNumber = await collection.findOne({ phoneNumber: user.phoneNumber })
-            if (!testEmail && !testPhoneNumber) {
-                    await collection.insertOne(user)
-                    delete user.password
-                    res.status(201).json(user)
-            } else if (testEmail) {
-                res.status(409).json({ code: "email", message: "The email already exists" })
-            } else if (testPhoneNumber) {
-                res.status(409).json({ code: "phoneNumber", message: "The phone number already exists" })
-            }
+            await collection.insertOne(user)
+            delete user.password
+            res.status(201).json(user)
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
     });
 
-
-    // //  UPDATE ONE AS USER
-    // router.put('/:id', async (req, res) => {
-    //     const data = req.body;
-    //     const id = req.params.id;
-    //     delete data._id;
-    //     delete data.registerDate;
-    //     try {
-    //         const hashedPassword = await bcrypt.hash(data.password, 10);
-    //         data.password = hashedPassword;
-    //         console.log(data)
-    //         await collection.findOneAndUpdate({ _id: ObjectID(id) },{ $set: data },{returnOriginal: false});
-    //         const user = await collection.findOne({ _id: ObjectID(id) });
-    //         delete user.password
-    //         res.status(200).json(user)
-    //     } catch (err) {
-    //         res.status(500).json({ message: err.message })
-    //     }
-    // });
 
     // UPDATE ONE 
     router.put('/:updateAs/:id', async (req, res) => {
