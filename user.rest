@@ -1,10 +1,5 @@
 GET http://localhost:3001/api/users
 
-### 
-
-GET http://localhost:3001/api/users/
-
-
 ###
 
 POST http://localhost:3001/api/users
@@ -46,7 +41,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3001/api/users/6256bbf0c737137226bbe42d
+DELETE http://localhost:3001/api/users/62d55b345fd92634715ebf87
 
 ###
 GET https://parseapi.back4app.com/

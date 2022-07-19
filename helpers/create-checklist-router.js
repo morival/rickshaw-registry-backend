@@ -56,8 +56,8 @@ const createChecklistRouter = function(collection) {
         if (description === null)
             res.status(404).json({ message: "Cannot find description" })
         try {
-            const deleteAction = await collection.deleteOne({ _id: ObjectID(id) })
-            console.log(deleteAction)
+            const del = await collection.deleteOne({ _id: ObjectID(id) })
+            console.log(del)
             res.status(200).json({ code: "description", message: `Deleted description: ${description.description}` })
         } catch (err) {
             res.status(500).json({ message: err.message })
@@ -69,14 +69,13 @@ const createChecklistRouter = function(collection) {
     router.delete('/', async (req, res) => {
         const ids = req.body.map(id => new ObjectID(id))
         const query = { _id: { $in: ids } };
-        console.log(query)
         try {
-            const deleteAction = await collection.deleteMany(query)
-            res.status(200).json({ code: "description", message: `Deleted ${deleteAction.deletedCount} descriptions` })
+            const del = await collection.deleteMany(query)
+            res.status(200).json({ code: "descriptions", message: `Deleted ${del.deletedCount} description${del.deletedCount > 1 ? "s": ""}` })
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
-    })
+    });
 
 
     return router;

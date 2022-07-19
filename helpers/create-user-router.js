@@ -18,7 +18,7 @@ const createUserRouter = function(collection) {
             if (user === undefined)
                 res.status(404).json({ userLogin: "Cannot find user" })
             else if (await bcrypt.compare(data.password, user.password))
-                res.json({ id: user._id, message: "Authentification Success" })
+                res.json({ _id: user._id, message: "Authentification Success" })
             else 
             res.status(401).json({ password: "Incorrect Password" })
         } catch (err) {
@@ -41,6 +41,7 @@ const createUserRouter = function(collection) {
     //  GET ONE BY ID
     router.get('/:id', async (req, res) => {
         const id = req.params.id;
+        console.log(id)
         try {
             const user = await collection.findOne({ _id: ObjectID(id) })
             console.log(user)
@@ -156,13 +157,26 @@ const createUserRouter = function(collection) {
         if (user === null)
             res.status(404).json({ message: "Cannot find user" })
         try {
-            const deleteAction = await collection.deleteOne({ _id: ObjectID(id) })
-            console.log(deleteAction)
+            const del = await collection.deleteOne({ _id: ObjectID(id) })
+            console.log(del)
             res.status(200).json({ code: "account", message: `Deleted ${user.name}` })
         } catch (err) {
             res.status(500).json({ message: err.message })
         }
     });
+
+
+    // DELETE MANY
+    router.delete('/', async (req, res) => {
+        const ids = req.body.map(id => new ObjectID(id))
+        const query = { _id: { $in: ids } };
+        try {
+            const del = await collection.deleteMany(query)
+            res.status(200).json({ code:"accounts", message: `Deleted ${del.deletedCount} account${del.deletedCount > 1 ? "s": ""}` })
+        } catch (err) {
+            res.status(500).json({ message: err.message })
+        }
+    })
     
 
     return router; 
